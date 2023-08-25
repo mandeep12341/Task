@@ -1,0 +1,143 @@
+<h2 class="text-center" style="margin-bottom:2rem; margin-top:2rem">Twitter App</h2>
+                   
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <%= link_to "TaskPlanetSpark", root_path, class: "navbar-brand" %>
+    
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ml-auto">
+        <% if user_signed_in? %>
+         <div class="user-box  text-white d-inline-block rounded p-2">
+            <p class="user-email m-0 text-primary"><%= current_user.email %></p>
+          </div>
+          <li class="nav-item">
+             <%= link_to "Edit ", edit_user_registration_path, class: "nav-link edit btn text-white btn-success nav-link btn-hover-effect mr-2 " %>
+          </li>
+           <li class="nav-item">
+             <%= button_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'btn signout btn-danger text-white nav-link btn-hover-effect' %>
+           </li>
+        <% else %>
+            <li class="nav-item">
+               <%= link_to 'Sign In', new_user_session_path, class: 'btn text-white btn-success nav-link btn-hover-effect mr-2' %>
+            </li>
+            <li class="nav-item">
+               <%= link_to 'Sign Up', new_user_registration_path, class: 'btn text-white btn-primary nav-link btn-hover-effect' %>
+            </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+
+<div >
+    <div style="justify-content: center " class="d-flex" >
+      <a href="/blogs/new" style="margin-bottom:2rem" class="btn btn-success btn-lg ">Create</a>
+    </div>
+</div>
+<div class="d-flex flex-column justify-content-center d-flex align-items-center">
+  <% if @blog.present? %>   
+    <% @blog.each do |blog| %>
+     <div class="card mb-3 border shadow" style="width: 18rem;">
+        <% if blog.avatar.attached? %>
+          <div class="text-center">
+            <img src="<%= url_for(blog.avatar) %>" class="img-fluid card-img-top">
+          </div>
+        <% end %>
+        <div class="card-body">
+          <h5 class="card-title"><%= blog.title %></h5>
+          <div class="card-buttons">
+            <span id="destroy" data-id="<%= blog.id %>">         
+              <span class="btn btn-danger">Delete</span>
+            </span>
+            <a href="<%= blog_path(blog) %>" class="btn btn-primary">Show</a>
+            <a href="<%= edit_blog_path(blog) %>" class="btn btn-primary">Edit</a>
+          </div>
+        </div>
+      </div>
+    <% end %> 
+  <% else %>
+    <p>No posts found.</p>
+  <% end %>
+</div>
+
+
+<style>
+/* Add other button styling here */
+.navbar .btn-hover-effect {
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.navbar .btn-hover-effect:hover {
+  background-color: ; /* Change to your desired hover background color */
+  color: black; /* Set the text color to black on hover */
+    width: 8rem;
+}
+
+.edit-hover-effect {
+  background-color: #007bff; /* Blue background color */
+  color: white;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.edit-hover-effect:hover {
+  background-color: #0056b3; /* Darker blue background color on hover */
+}
+
+.btn-hover-effect {
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.edit-hover-effect:hover{
+ background-color: #blue; 
+  color: white; /* White text color on hover */
+}
+
+.card {
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+
+.signout-hover-effect:hover {
+  background-color: #ff0000; /* Red background color */
+  color: white; /* White text color on hover */
+}
+
+
+
+</style>
+
+<script>
+  $(document).ready(function() {
+    console.log("I am in edit");
+
+    $('#destroy').on('click', function (event) {
+      var id = $(this).data('id');
+      console.log(id);
+
+      event.preventDefault();
+
+      console.log("----------I am here in delete button function --------");
+
+      // Get the CSRF token from the meta tag
+      var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+      $.ajax({
+        url: '/blogs/' + id,
+        method: 'DELETE',
+        headers: {
+          'X-CSRF-Token': csrfToken
+        },
+        success: function(response) {
+          var url = '/';
+          window.location.href = url;
+        },
+      });
+    });
+  });
+</script>

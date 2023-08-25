@@ -1,0 +1,45 @@
+<%= simple_form_for(@blog, html: { class: 'custom-form' }) do |f| %>
+  <%= f.error_notification %>
+  <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+
+  <div class="form-group">
+   
+    <%= f.input :title, input_html: { class: 'form-control' } %>
+  </div>
+
+  <div class="form-group">
+  
+    <%= f.input :description, input_html: { class: 'form-control' } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label "Profile Photo" %>
+    <%= f.file_field :avatar, class: 'form-control-file' %>
+  </div>
+
+  <h3>Comments</h3>
+  <div id="comments">
+    <%= f.simple_fields_for :comments do |comment| %>
+      <%= render "comment", f: comment %>
+    <% end %>
+  </div>
+
+  <%= link_to_add_fields('Add Comment', f, :comments)  %>
+
+  <div class="form-actions mt-3">
+ 
+    <%= f.button :submit, class: 'btn btn-success' %>
+     <%= link_to "Home", root_path, class: "btn btn-primary" %>
+
+  </div>
+
+  <script type="text/javascript">
+    $('.custom-form').on('click', '.add_fields', function(event) {
+      console.log('clicked');
+      time = new Date().getTime();
+      regexp = new RegExp($(this).data('id'), 'g');
+      $(this).before($(this).data('fields').replace(regexp, time));
+      event.preventDefault();
+    });
+  </script>
+<% end %>

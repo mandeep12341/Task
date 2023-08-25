@@ -1,0 +1,9 @@
+<div class="nested-fields">
+  <%= f.hidden_field :_destroy %>
+  <%= f.input :paragraph, as: :text %>
+  <%= f.input :blog_id, as: :hidden %>
+  <div id="delete">
+  <%= link_to "Delete", "/comments/#{f.object.id}", method: :Delete  %>
+  </div>
+
+</div>
